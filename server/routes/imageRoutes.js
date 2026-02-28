@@ -40,4 +40,7 @@ router.get("/result/:id", imageController.getResult);
 // GET /api/images/compare/:id — Get pixel difference heatmap data
 router.get("/compare/:id", imageController.getComparison);
 
+// GET /api/images/detect/:id — Run face detection comparison (THE ML DEMO)
+router.get("/detect/:id", imageController.runFaceDetection);
+
 module.exports = router;
