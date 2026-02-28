@@ -107,8 +107,8 @@ exports.uploadAndProtect = async (req, res) => {
         perturbedPixels,
         perturbedPercent: parseFloat(((perturbedPixels / totalPixels) * 100).toFixed(1)),
         avgNoiseLevel: parseFloat(avgNoise.toFixed(2)),
-        humanVisibility: ssim > 0.95 ? "Invisible" : ssim > 0.90 ? "Nearly invisible" : "Slightly visible",
-        aiDisruption: epsilon >= 12 ? "Maximum" : epsilon >= 8 ? "High" : "Moderate",
+        humanVisibility: ssim > 0.93 ? "Invisible" : ssim > 0.88 ? "Nearly invisible" : "Slightly visible",
+        aiDisruption: epsilon >= 12 ? "Maximum" : epsilon >= 6 ? "High" : "Moderate",
       },
       createdAt: new Date().toISOString(),
     };

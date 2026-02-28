@@ -31,19 +31,19 @@ function applyAdversarialPerturbation(imageBuffer, width, height, channels, epsi
 
   // ---- Layer 1: High-Frequency Structured Noise ----
   // Creates patterns at frequencies that CNNs are sensitive to
-  applyHighFrequencyNoise(output, width, height, channels, epsilon * 0.5);
+  applyHighFrequencyNoise(output, width, height, channels, epsilon * 0.25);
 
   // ---- Layer 2: Gradient-Direction Perturbation ----
   // Mimics FGSM by pushing pixels along local gradient directions
-  applyGradientPerturbation(output, pixels, width, height, channels, epsilon * 0.4);
+  applyGradientPerturbation(output, pixels, width, height, channels, epsilon * 0.2);
 
   // ---- Layer 3: Face-Region Concentrated Noise ----
   // Applies stronger noise to the center region (likely face area)
-  applyFaceRegionNoise(output, width, height, channels, epsilon * 0.5);
+  applyFaceRegionNoise(output, width, height, channels, epsilon * 0.25);
 
   // ---- Layer 4: Checkerboard Pattern ----
   // Disrupts spatial feature extraction in neural networks
-  applyCheckerboardNoise(output, width, height, channels, epsilon * 0.3);
+  applyCheckerboardNoise(output, width, height, channels, epsilon * 0.15);
 
   return Buffer.from(output);
 }
