@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const { applyAdversarialPerturbation } = require("../utils/perturbation");
 const { calculateSSIM } = require("../utils/similarity");
 const { generateDifferenceMap } = require("../utils/differenceMap");
+const { compareFaceDetection, detectFaceBoxes } = require("../utils/faceDetect");
 
 // In-memory store for results (no database needed for hackathon)
 const results = new Map();
@@ -45,14 +46,20 @@ exports.uploadAndProtect = async (req, res) => {
 
     console.log(`   Image size: ${width}x${height}, channels: ${channels}`);
 
-    // Step 2: Apply adversarial perturbation
+    // Step 2a: Detect face bounding boxes using ML model
+    console.log("   🧠 Detecting face locations...");
+    const faceBoxes = await detectFaceBoxes(originalPath);
+    console.log(`   Found ${faceBoxes.length} face(s): ${faceBoxes.map(b => `${b.width}x${b.height}@(${b.x},${b.y})`).join(", ") || "none (using center fallback)"}`);
+
+    // Step 2b: Apply adversarial perturbation (targeted at face boxes)
     const startTime = Date.now();
     const protectedBuffer = applyAdversarialPerturbation(
       Buffer.from(originalBuffer),
       width,
       height,
       channels,
-      epsilon
+      epsilon,
+      faceBoxes
     );
     const processingTime = Date.now() - startTime;
     console.log(`   Perturbation applied in ${processingTime}ms`);
@@ -163,6 +170,41 @@ exports.getComparison = (req, res) => {
 };
 
 // ----- Helper Functions -----
+
+/**
+ * GET /api/images/detect/:id
+ * Run ML face detection on both original and protected images
+ * THIS IS THE KEY DEMO ENDPOINT — proves the shield works!
+ */
+exports.runFaceDetection = async (req, res) => {
+  try {
+    const result = results.get(req.params.id);
+    if (!result) {
+      return res.status(404).json({ error: "Result not found" });
+    }
+
+    const originalPath = path.join(__dirname, "..", result.originalUrl.replace(/^\//, ""));
+    const protectedPath = path.join(__dirname, "..", result.protectedUrl.replace(/^\//, ""));
+
+    console.log("\n🔍 Running ML face detection comparison...");
+    const comparison = await compareFaceDetection(originalPath, protectedPath);
+
+    res.json({
+      success: true,
+      message: "Face detection comparison complete",
+      data: {
+        imageId: req.params.id,
+        ...comparison,
+      },
+    });
+  } catch (error) {
+    console.error("Face detection error:", error);
+    res.status(500).json({
+      error: "Face detection failed",
+      details: error.message,
+    });
+  }
+};
 
 function countPerturbedPixels(original, perturbed, channels) {
   let count = 0;
