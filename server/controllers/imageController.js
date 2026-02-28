@@ -29,8 +29,8 @@ exports.uploadAndProtect = async (req, res) => {
 
     // Get protection strength from request (default: medium)
     const strength = req.body.strength || "medium";
-    const epsilonMap = { low: 4, medium: 8, high: 14 };
-    const epsilon = epsilonMap[strength] || 8;
+    const epsilonMap = { low: 8, medium: 14, high: 22 };
+    const epsilon = epsilonMap[strength] || 14;
 
     console.log(`\n🔄 Processing image: ${req.file.originalname}`);
     console.log(`   Strength: ${strength} (epsilon: ${epsilon})`);

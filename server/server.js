@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const imageRoutes = require("./routes/imageRoutes");
+const toolRoutes = require("./routes/toolRoutes");
 const { loadModels } = require("./utils/faceDetect");
 
 const app = express();
@@ -17,10 +18,11 @@ app.use("/protected", express.static(path.join(__dirname, "protected")));
 
 // Routes
 app.use("/api/images", imageRoutes);
+app.use("/api/tools", toolRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
-  res.json({ status: "DeepFake Shield API is running 🛡️" });
+  res.json({ status: "Women's Digital Safety Toolkit API is running 🛡️" });
 });
 
 app.listen(PORT, async () => {
