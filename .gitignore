@@ -1,0 +1,7 @@
+
+node_modules/
+uploads/*
+protected/*
+models/*
+!uploads/.gitkeep
+!protected/.gitkeep
