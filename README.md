@@ -96,4 +96,13 @@ Detects facial inconsistencies and manipulation artifacts
 
 Outputs probability score for Real vs Fake classification
 
-  
+## Features
+
+- Upload image or video for deepfake analysis
+- AI-based fake media detection
+- Instant result display
+- Simple and user-friendly interface
+- Secure file handling
+- Awareness of digital safety for women  
+
+## Run Commands 
